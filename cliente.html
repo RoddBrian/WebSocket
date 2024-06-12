@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket API Client</title>
+</head>
+<body>
+    <h1>WebSocket API Client</h1>
+    <div>
+        <h2>Items</h2>
+        <ul id="items-list"></ul>
+    </div>
+    <div>
+        <h2>Agregar Item</h2>
+        <input type="text" id="item-name" placeholder="Item name">
+        <button onclick="addItem()">Agregar</button>
+    </div>
+
+    <script>
+        const ws = new WebSocket('ws://localhost:5000');
+
+        ws.onopen = () => {
+            console.log('Conectado al servidor WebSocket');
+        };
+
+        ws.onmessage = (event) => {
+            const message = JSON.parse(event.data);
+
+            if (message.type === 'items') {
+                updateItemsList(message.data);
+            } else if (message.type === 'newItem') {
+                addItemToList(message.data);
+            }
+        };
+
+        ws.onclose = () => {
+            console.log('Desconectado del servidor WebSocket');
+        };
+
+        function updateItemsList(items) {
+            const itemsList = document.getElementById('items-list');
+            itemsList.innerHTML = '';
+            items.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = item.name;
+                itemsList.appendChild(li);
+            });
+        }
+
+        function addItemToList(item) {
+            const itemsList = document.getElementById('items-list');
+            const li = document.createElement('li');
+            li.textContent = item.name;
+            itemsList.appendChild(li);
+        }
+
+        function addItem() {
+            const itemName = document.getElementById('item-name').value;
+            ws.send(JSON.stringify({ type: 'addItem', name: itemName }));
+        }
+    </script>
+</body>
+</html>
