@@ -21,7 +21,7 @@
         const ws = new WebSocket('ws://localhost:5000');
 
         ws.onopen = () => {
-            console.log('Conectado al servidor WebSocket');
+            console.log('Connected to WebSocket Server');
         };
 
         ws.onmessage = (event) => {
@@ -35,7 +35,7 @@
         };
 
         ws.onclose = () => {
-            console.log('Desconectado del servidor WebSocket');
+            console.log('Disconnected from WebSocket Server');
         };
 
         function updateItemsList(items) {

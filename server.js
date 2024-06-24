@@ -10,12 +10,12 @@ let items = [
 ];
 
 server.on('connection', ws => {
-    console.log('Cliente conectado');
+    console.log('Client connected');
 
-    // Enviar la lista de items cuando un cliente se conecta
+    // Send item list when conecction start
     ws.send(JSON.stringify({ type: 'items', data: items }));
 
-    // Manejar mensajes recibidos del cliente
+    // Control messages from client
     ws.on('message', message => {
         const parsedMessage = JSON.parse(message);
 
@@ -25,7 +25,7 @@ server.on('connection', ws => {
                 name: parsedMessage.name
             };
             items.push(newItem);
-            // Enviar el nuevo item a todos los clientes conectados
+            // Send new item to clients
             server.clients.forEach(client => {
                 if (client.readyState === WebSocket.OPEN) {
                     client.send(JSON.stringify({ type: 'newItem', data: newItem }));
@@ -35,8 +35,8 @@ server.on('connection', ws => {
     });
 
     ws.on('close', () => {
-        console.log('Cliente desconectado');
+        console.log('Client disconnected');
     });
 });
 
-console.log(`Servidor WebSocket corriendo en ws://localhost:${port}`);
+console.log(`WebSocket server runs on ws://localhost:${port}`);
